@@ -14,18 +14,20 @@ export default function Header() {
     <div>
       <nav>
         <div className="flex justify-between bg-white h-auto p-3.5">
-          <img
-            src="/banika.png"
-            alt="bank-logo"
-            className="w-30 h-20 rounded-md"
-          />
+          <Link href="/">
+            <img
+              src="/banika.png"
+              alt="bank-logo"
+              className="w-30 h-20 rounded-md"
+            />
+          </Link>
           <div className="flex space-x-2 ">
             <Link href="/create">
               <button className="bg-orange-200 font-bold m-2 p-2 rounded-full w-30 hover:shadow-orange-900">
                 Bli kund
               </button>
             </Link>
-            <Link href="/logga-in">
+            <Link href="/login">
               <button className=" bg-orange-800 text-white font-bold m-2 p-2 w-30 rounded-full">
                 Logga in
               </button>
@@ -60,7 +62,7 @@ export default function Header() {
               </li>
               <li className="hover:font-bold">
                 <a className="block px-4 py-2 text-black hover:bg-orange-100">
-                  Sparande
+                  Bank-id
                 </a>
               </li>
             </ul>

@@ -8,7 +8,8 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  async function createUser() {
+  async function createUser(event) {
+    event.preventDefault(); // Förhindrar standardformulärets submit-beteende
     try {
       const response = await fetch("http://localhost:4000/users", {
         method: "POST",
@@ -17,20 +18,26 @@ export default function Page() {
         },
         body: JSON.stringify({ username, password }),
       });
-      const data = await response.json();
-      console.log(data);
-      router.push("/login");
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        router.push("/login");
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData.message);
+      }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error:", error.message);
     }
+
+    console.log(username, password);
   }
 
   return (
     <div className="flex justify-center items-center h-screen bg-white">
-      <div
+      <form
+        onSubmit={createUser} // Lägg till onSubmit istället för onClick på knappen
         className="w-1/2 max-w-lg p-6 bg-orange-100 rounded-lg shadow-lg"
-        // action="/login"
-        // method="post"
       >
         <h2 className="text-2xl font-semibold mb-4 text-center">
           Bli en av tusentals nöjda kunder hos oss
@@ -42,7 +49,7 @@ export default function Page() {
           <input
             value={username}
             onChange={(e) => setUserName(e.target.value)}
-            id="userName"
+            id="username" // Korrigerat id till "username"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg"
             type="text"
             placeholder="Skriv in ditt användarnamn"
@@ -64,12 +71,12 @@ export default function Page() {
         </div>
 
         <button
-          onClick={createUser}
+          type="submit"
           className="w-full bg-orange-800 py-2 px-4 rounded-lg text-white font-bold text-center"
         >
           Skapa konto
         </button>
-      </div>
+      </form>
     </div>
   );
 }

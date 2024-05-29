@@ -1,9 +1,13 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="flex flex-col justify-center items-center bg-white mt-5">
       <div className="bg-orange-100 flex justify-center items-center w-2/3 p-6 rounded-lg shadow-lg">
         <div className="mr-6">
-          <h1 className="text-5xl font-bold text-orange-800 mb-4 w-fit">Bankia</h1>
+          <h1 className="text-5xl font-bold text-orange-800 mb-4 w-fit">
+            Bankia
+          </h1>
           <h2 className="text-2xl text-orange-800 font-semibold">
             Ditt trygga val för ekonomisk framgång
           </h2>
@@ -17,12 +21,16 @@ export default function Home() {
         </div>
       </div>
       <div className="flex justify-center item-center my-4 space-x-2">
-        <button className="bg-orange-200 font-bold m-2 p-2 rounded-full w-40 hover:shadow-orange-900">
-          Bli kund
-        </button>
-        <button className="bg-orange-800 text-white font-bold m-2 p-2 rounded-full w-40">
-          Logga in
-        </button>
+        <Link href="/create">
+          <button className="bg-orange-200 font-bold m-2 p-2 rounded-full w-40 hover:shadow-orange-900">
+            Bli kund
+          </button>
+        </Link>
+        <Link href="/login">
+          <button className="bg-orange-800 text-white font-bold m-2 p-2 rounded-full w-40">
+            Logga in
+          </button>
+        </Link>
       </div>
     </div>
   );

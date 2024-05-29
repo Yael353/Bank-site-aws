@@ -18,39 +18,77 @@ function generateOTP() {
 
 // Din kod här. Skriv dina arrayer
 
-const users = [];
-const accounts = [];
-const sessions = [];
+let users = [];
+let accounts = [];
+let sessions = [];
 
 // Din kod här. Skriv dina routes:
 app.post("/users", (req, res) => {
-  const data = req.body;
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: "Alla fält måste fyllas i" });
+  }
   const id = users.length + 1;
-  users.push(data);
-  accounts.push({ id, userId: id, amount: 0 });
+  users.push({ id, username, password });
+  accounts.push({ id, userId: id, balance: 0 });
   console.log("in users array:", users);
-
-  res.send("post data recived: " + JSON.stringify(data));
+  res
+    .status(200)
+    .json({ message: "Användare skapad!", user: { id, username } });
 });
 
+//sessions
 app.post("/sessions", (req, res) => {
-  const sessionData = req.body;
-  sessions.push(data);
-
-  res.send("post data recived: " + JSON.stringify(data));
+  const { username, password } = req.body;
+  const user = users.find(
+    (user) => user.username === username && user.password === password
+  );
+  if (!user) {
+    res.status(401).json({
+      message: "Kontrollera att användarnamn och lösenord är korrekta.",
+    });
+  } else {
+    const token = generateOTP();
+    sessions.push({ userId: user.id, token });
+    res.status(200).json({ userId: user.id, token });
+  }
 });
 
+// saldo
 app.post("/me/accounts", (req, res) => {
-  const accountData = req.body;
-  accounts.push(data);
-
-  res.send("post data recived: " + JSON.stringify(data));
+  const { token } = req.body;
+  const session = sessions.find((session) => session.token === token);
+  if (!session) {
+    res.status(401).json({ message: "Ogiltig session" });
+  } else {
+    const account = accounts.find(
+      (account) => account.userId === session.userId
+    );
+    const saldo = account ? account.amount : 0;
+    res.status(200).json({ saldo: saldo });
+  }
 });
 
+// Insättning
 app.post("/me/accounts/transactions", (req, res) => {
-  const transactions = req.body;
+  const { token, amount } = req.body;
+  const session = sessions.find((session) => session.token === token);
+  if (!session) {
+    res.status(401).json({ message: "Ogiltig session" });
+  } else {
+    const account = accounts.find(
+      (account) => account.userId === session.userId
+    );
 
-  res.send("post data recived: " + JSON.stringify(data));
+    if (account.amount === null || account.amount === undefined) {
+      account.amount = 0;
+    }
+
+    account.amount += amount;
+    res
+      .status(200)
+      .json({ message: "Pengar insatta!", newBalance: account.amount });
+  }
 });
 
 // Starta servern
